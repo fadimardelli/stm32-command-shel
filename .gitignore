@@ -1,0 +1,20 @@
+# Build output
+Debug/
+Release/
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.o
+*.d
+*.su
+
+# IDE and machine-specific settings
+.settings/
+*.launch
+.osx.project
+.metadata/
+
+# macOS
+.DS_Store
