@@ -72,11 +72,14 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	static const char menu[] =
 	    "\r\n"
-	    "1 = LED on\r\n"
-	    "2 = LED off\r\n"
-	    "3 = Blink LED\r\n"
-	    "Choose an option: ";
-	uint8_t received;
+		"Type what you want to do \r\n"
+	    "led on\r\n"
+	    "led off\r\n"
+	    "blink led\r\n";
+	uint8_t received = 0;
+	char input[32];
+	int counter=0;
+
 
 
   /* USER CODE END 1 */
@@ -102,6 +105,9 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 uart_print("Hello from the board\r\n");
+uart_print(menu);
+uart_print("> ");
+
 
 
   /* USER CODE END 2 */
@@ -110,34 +116,54 @@ uart_print("Hello from the board\r\n");
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  uart_print(menu);
 	  HAL_UART_Receive(&huart2, &received, 1, HAL_MAX_DELAY);
+	  if(received == '\r' || received == '\n'){
 
-	  HAL_UART_Transmit(&huart2, &received, 1, HAL_MAX_DELAY);
-	  uart_print("\r\n");
+		  uart_print("\r\n");
+		  input[counter] = '\0';
 
-	  switch (received)
-	  {
-	  case '1':
-	      led_on();
-	      uart_print("LED is ON\r\n");
-	      break;
 
-	  case '2':
-	      led_off();
-	      uart_print("LED is OFF\r\n");
-	      break;
 
-	  case '3':
-	      uart_print("LED is blinking\r\n");
-	      led_blink();
-	      uart_print("Done\r\n");
-	      break;
+		  if(strcmp(input,"led on")==0){
+			  led_on();
+			  uart_print("LED is ON\r\n");
 
-	  default:
-	      uart_print("Unknown option\r\n");
-	      break;
+		  }
+		  else if(strcmp(input,"led off")==0){
+			  led_off();
+			  uart_print("LED is OFF\r\n");
+
+		  }
+		  else if (strcmp(input,"blink led")==0){
+			  uart_print("LED is Blinking\r\n");
+			  led_blink();
+
+		  }
+		  else{
+			  uart_print("invalid input");
+		  }
+
+		  counter = 0;
+		  uart_print("> ");
 	  }
+	  else if(received =='\b' || received == 127){
+		  if(counter>0){
+			  counter--;
+			  uart_print("\b \b");
+		  }
+
+
+
+	  }
+	  else{
+		  if(counter < sizeof(input)-1){
+			  input[counter] = received;
+			  counter++;
+			  HAL_UART_Transmit(&huart2, &received, 1, HAL_MAX_DELAY);		  }
+
+	  }
+
+
 
     /* USER CODE END WHILE */
 
@@ -257,7 +283,6 @@ static void MX_GPIO_Init(void)
 
   /* USER CODE END MX_GPIO_Init_2 */
 }
-
 /* USER CODE BEGIN 4 */
 
 static void uart_print(const char *text)

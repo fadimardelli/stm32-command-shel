@@ -16,13 +16,15 @@ A small command shell for the NUCLEO-C031C6 board. The board talks to a serial t
 
 ## Current features
 
-- Menu printed over UART at startup and after each command
-- Single-key commands:
-  - `1` turns the LED on
-  - `2` turns the LED off
-  - `3` blinks the LED four times
-- Typed keys are echoed back to the terminal
-- Unknown keys are reported instead of ignored
+- Line-based input: characters are collected until Enter is pressed
+- Typed characters are echoed back to the terminal
+- Backspace removes the last character, both from the buffer and on screen
+- Input is limited to the buffer size; extra characters are ignored
+- Commands:
+  - `led on` turns the LED on
+  - `led off` turns the LED off
+  - `blink led` blinks the LED four times
+- Unknown commands are reported
 
 ## Implementation notes
 
@@ -54,10 +56,9 @@ STM32C031C6TX_FLASH.ld   Linker script
    screen /dev/tty.usbmodemXXXX 115200
    ```
 
-4. Press a number key to send a command.
+4. Type a command and press Enter.
 
 ## Planned
 
-- Typed text commands (for example `led on`) with line editing
-- Command table with arguments (for example `blink 300`)
+- Command table with arguments (for example `blink 300`) and a `help` command
 - Interrupt-driven UART reception with a ring buffer
