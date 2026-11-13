@@ -122,9 +122,10 @@ uart_print("> ");
 		  uart_print("\r\n");
 		  input[counter] = '\0';
 
-
-
-		  if(strcmp(input,"led on")==0){
+		  if(counter==0){
+			  // nothing will happen
+		  }
+		  else if(strcmp(input,"led on")==0){
 			  led_on();
 			  uart_print("LED is ON\r\n");
 
@@ -140,7 +141,9 @@ uart_print("> ");
 
 		  }
 		  else{
-			  uart_print("invalid input");
+			  uart_print("Unknown command: ");
+			  uart_print(input);
+			  uart_print("\r\n");
 		  }
 
 		  counter = 0;
@@ -152,8 +155,6 @@ uart_print("> ");
 			  uart_print("\b \b");
 		  }
 
-
-
 	  }
 	  else{
 		  if(counter < sizeof(input)-1){
@@ -162,8 +163,6 @@ uart_print("> ");
 			  HAL_UART_Transmit(&huart2, &received, 1, HAL_MAX_DELAY);		  }
 
 	  }
-
-
 
     /* USER CODE END WHILE */
 
